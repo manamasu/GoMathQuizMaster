@@ -1,88 +1,53 @@
 package main
 
 import (
-	"encoding/csv"
 	"fmt"
-	"math/rand"
-	"os"
+	"quizmaster/internal/csvreadwriter"
+	"quizmaster/internal/helper"
 	"time"
 )
 
 const filename = "problems.csv"
 
-type Record[T any] struct {
-	record []T
-}
-
 func main() {
-	fmt.Println("Hello Quizmaster")
-	generateCSVMathProblemsFile(filename)
+	go generateCSVMathProblemsFile(filename)
+
+	helper.TypewriterEffect("Hello to GoMathQuizmaster\n", 50*time.Millisecond)
+
+	listMenu()
+	var choice string
+
+	_, err := fmt.Scan(&choice)
+
+	if err != nil {
+		for choice != "1" {
+			fmt.Println("Please Press 1) or 2) if you want to continue")
+			fmt.Scan(&choice)
+		}
+	}
 }
 
-func generateMathProblemRecord() [][]int {
-	src := rand.NewSource(time.Now().UnixNano())
-	r := rand.New(src) //Salting (Randomization) based on our src
-
-	numbers := make([][]int, 0, 200)
-
-	for i := 0; i < 200; i++ {
-		n1 := r.Intn(100)
-		n2 := r.Intn(100)
-		record := []int{n1, n2, n1 + n2}
-
-		numbers = append(numbers, record)
-	}
-
-	fmt.Println(numbers)
-
-	return numbers
+func listMenu() {
+	fmt.Println("Would you like to start with Addition or Subtraction?")
+	fmt.Println("Press 1) Addition")
+	fmt.Println("Press 2) Subtraction")
 }
 
 func generateCSVMathProblemsFile(filename string) {
-	writer, file, err := createCSVWriter(filename)
+	writer, file, err := csvreadwriter.CreateCSVWriter(filename)
 
 	if err != nil {
 		fmt.Println("Error creating CSV writer: ", err)
 	}
 	defer file.Close()
 
-	headers := Record[string]{record: []string{"Summand1", "Summand2", "Sum"}}
-	writeCSVRecord(writer, headers)
+	headers := csvreadwriter.NewRecord([]string{"Summand1", "Summand2", "Sum"})
+	csvreadwriter.WriteCSVRecord(writer, headers)
 
-	numbers := generateMathProblemRecord()
+	numbers := helper.GenerateMathProblemRecord()
 
 	for _, v := range numbers {
-		mathRecord := Record[int]{record: v}
-		writeCSVRecord(writer, mathRecord)
+		mathRecord := csvreadwriter.NewRecord(v)
+		csvreadwriter.WriteCSVRecord(writer, mathRecord)
 	}
-}
-
-// Creates a file f in the current folder and passes the csv writer w through
-func createCSVWriter(filename string) (*csv.Writer, *os.File, error) {
-
-	f, err := os.Create(filename)
-
-	if err != nil {
-		fmt.Println("There has been an error with Creating a file. Error: ", err)
-		return nil, nil, err
-	}
-	w := csv.NewWriter(f)
-
-	return w, f, nil
-}
-
-// writeCSVRecord writes a Record[T] to the given CSV writer.
-// converts each field to a string before writing, and flushes (writes to csv).
-// T can be any type that can be stringified using fmt.Sprint.
-func writeCSVRecord[T any](writer *csv.Writer, rec Record[T]) {
-	var stringRecord []string
-	for _, v := range rec.record {
-		stringRecord = append(stringRecord, fmt.Sprint(v))
-	}
-
-	err := writer.Write(stringRecord)
-	if err != nil {
-		fmt.Println("Error writing record to csv: ", err)
-	}
-	writer.Flush()
 }
