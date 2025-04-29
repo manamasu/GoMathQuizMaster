@@ -8,9 +8,19 @@ You can also create and load your own custom challenges using a CSV file formatt
 
 ## Features
 
-- [x] Randomly generate predefined simple math challenges/problems csv.
-  - [ ] Allow for Ranging numbers from min to max, instead of predefined default
-- []Support for custom challenges via CSV files (3 columns needed: Number1, Number2, Solution).
+- [] CLI-based user interface with flag options
+- [x] Automatically generates CSV files with random math problems
+- [] Supports basic operations:
+  - [] addition
+  - [] subtraction
+  - [] multiplication
+  - [] division
+- [] Support for custom challenges via CSV files (3 columns needed: Number1, Number2, Solution).
+  - Example:
+
+  ```csv
+  3,4,7
+  10,5,15
 
 ## Getting Started
 
@@ -25,4 +35,10 @@ cd GoMathQuizMaster
 
 ```bash
 go mod tidy
+```
+
+### Running Tests
+
+```bash
+go test ./...
 ```

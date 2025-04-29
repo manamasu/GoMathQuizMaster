@@ -3,6 +3,7 @@ package helper
 import (
 	"fmt"
 	"math/rand"
+	"quizmaster/internal/csvreadwriter"
 	"time"
 )
 
@@ -28,4 +29,23 @@ func GenerateMathProblemRecord() [][]int {
 	}
 
 	return numbers
+}
+
+func GenerateCSVMathProblemsFile(filename string) {
+	writer, file, err := csvreadwriter.CreateCSVWriter(filename)
+
+	if err != nil {
+		fmt.Println("Error creating CSV writer: ", err)
+	}
+	defer file.Close()
+
+	headers := csvreadwriter.NewRecord([]string{"Summand1", "Summand2", "Sum"})
+	csvreadwriter.WriteCSVRecord(writer, headers)
+
+	numbers := GenerateMathProblemRecord()
+
+	for _, v := range numbers {
+		mathRecord := csvreadwriter.NewRecord(v)
+		csvreadwriter.WriteCSVRecord(writer, mathRecord)
+	}
 }
