@@ -39,3 +39,15 @@ go.work
 # Ignore all local history of files
 .history
 .ionide
+
+# Binaries
+*.exe
+*.out
+*.bin
+
+# Go build cache
+/build/
+*.test
+
+###Custom problems.csv (since it will always be randomly generated)
+problems.csv
