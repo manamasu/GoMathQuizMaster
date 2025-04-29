@@ -10,17 +10,18 @@ You can also create and load your own custom challenges using a CSV file formatt
 
 - [] CLI-based user interface with flag options
 - [x] Automatically generates CSV files with random math problems
-- [] Supports basic operations:
-  - [] addition
-  - [] subtraction
-  - [] multiplication
-  - [] division
+- [x] Supports basic operations:
+  - [x] addition
+  - [x] subtraction
+  - [x] multiplication
+  - [x] division
 - [] Support for custom challenges via CSV files (3 columns needed: Number1, Number2, Solution).
   - Example:
 
   ```csv
   3,4,7
   10,5,15
+  ```
 
 ## Getting Started
 

@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-// Creates a file f in the current folder and passes the csv writer w through
+// CreateCSVWriter creates a file f in the current folder and passes the csv writer w through
 func CreateCSVWriter(filename string) (*csv.Writer, *os.File, error) {
 
 	f, err := os.Create(filename)
@@ -20,7 +20,7 @@ func CreateCSVWriter(filename string) (*csv.Writer, *os.File, error) {
 	return w, f, nil
 }
 
-// writeCSVRecord writes a Record[T] to the given CSV writer.
+// WriteCSVRecord writes a Record[T] to the given CSV writer.
 // converts each field to a string before writing, and flushes (writes to csv).
 // T can be any type that can be stringified using fmt.Sprint.
 func WriteCSVRecord[T any](writer *csv.Writer, rec Record[T]) {
