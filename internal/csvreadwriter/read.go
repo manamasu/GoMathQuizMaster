@@ -8,25 +8,25 @@ import (
 	"strconv"
 )
 
-func CreateCSVReader(filename string) (*csv.Reader, error) {
+func CreateCSVReader(filename string) (*csv.Reader, *os.File, error) {
 	f, err := os.Open(filename)
 
 	if err != nil {
-		return nil, fmt.Errorf("failed to open file: %w", err)
+		return nil, nil, fmt.Errorf("failed to open file: %w", err)
 	}
-	defer f.Close()
 
 	r := csv.NewReader(f)
-	return r, nil
+	return r, f, nil
 }
 
 func ReadCSVRecords(filename string) ([]Record[int], error) {
 
-	r, err := CreateCSVReader(filename)
-
+	r, f, err := CreateCSVReader(filename)
 	if err != nil {
 		fmt.Println("Something went wrong by creating CSVReader")
 	}
+	defer f.Close()
+
 	// Skip header
 	if _, err := r.Read(); err != nil {
 		return nil, fmt.Errorf("failed to read header: %w", err)

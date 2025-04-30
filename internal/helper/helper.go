@@ -46,9 +46,9 @@ func GenerateMathProblemRecord(sampleSize int, max int, mode MathMode, mop func(
 	case Division:
 		// For division it is important to avoid division by zero, so we need to offset r.Intn(number) by +1.
 		for i := 0; i < sampleSize; i++ {
-			b = r.Intn(9) + 1       // Generating a divisor between 1 and 9 (inclusive).
-			result = r.Intn(10) + 1 // Generating a quotient between 1 and 10 (inclusive).
-			a = b * result          // Calculate the dividend for exact division. e.g: b=3; result=4; a=3*4=12; 12/3=4
+			b = r.Intn(9) + 1          // Generating a divisor between 1 and 9 (inclusive).
+			result = r.Intn(max/b) + 1 // Generating a quotient between 1 and 10 (inclusive).
+			a = b * result             // Calculate the dividend for exact division. e.g: b=3; result=4; a=3*4=12; 12/3=4
 			record := []int{a, b, result}
 			numbers = append(numbers, record)
 		}
@@ -124,6 +124,21 @@ func SelectMathMode(input string) (MathMode, func(int, int) int, error) {
 		return Division, GetMathOp(Division), nil
 	default:
 		return 0, nil, fmt.Errorf("invalid input %s", input)
+	}
+}
+
+func GetOperatorSymbol(mode MathMode) string {
+	switch mode {
+	case Addition:
+		return "+"
+	case Subtraction:
+		return "-"
+	case Multiplication:
+		return "*"
+	case Division:
+		return "/"
+	default:
+		return "?"
 	}
 }
 
