@@ -6,8 +6,11 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 )
 
+// CreateCSVReader opens the specified file and returns a CSV reader and the file handle.
+// The caller is responsible for closing the returned file when done.
 func CreateCSVReader(filename string) (*csv.Reader, *os.File, error) {
 	f, err := os.Open(filename)
 
@@ -19,11 +22,13 @@ func CreateCSVReader(filename string) (*csv.Reader, *os.File, error) {
 	return r, f, nil
 }
 
+// ReadCSVRecords reads a CSV file with a header and returns a slice of Record[int].
+// Assumes each row contains only integer values after the header.
 func ReadCSVRecords(filename string) ([]Record[int], error) {
 
 	r, f, err := CreateCSVReader(filename)
 	if err != nil {
-		fmt.Println("Something went wrong by creating CSVReader")
+		return nil, fmt.Errorf("failed to create CSV reader: %w", err)
 	}
 	defer f.Close()
 
@@ -39,16 +44,18 @@ func ReadCSVRecords(filename string) ([]Record[int], error) {
 		if err == io.EOF {
 			break
 		}
-
 		if err != nil {
 			return nil, fmt.Errorf("error reading row: %w", err)
+		}
+		if len(row) == 0 {
+			continue // skipping blank lines
 		}
 
 		var nums []int
 
 		for _, field := range row {
+			field = strings.TrimSpace(field)
 			n, err := strconv.Atoi(field)
-
 			if err != nil {
 				return nil, fmt.Errorf("non-integer value found: %s", field)
 			}
