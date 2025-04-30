@@ -24,14 +24,9 @@
 # vendor/
 
 # Go workspace file
+# Output of the go coverage tool, specifically when used with LiteIDE
 go.work
 go.work.sum
-
-# Go workspace file
-# Output of the go coverage tool, specifically when used with LiteIDE
-
-# vendor/
-go.work
 
 # ========================
 

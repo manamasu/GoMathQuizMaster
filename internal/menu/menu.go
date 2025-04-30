@@ -66,13 +66,13 @@ func MainMenu(filename string, sampleSize int, max int) {
 			fmt.Println("Error loading problems:", err)
 			return
 		}
-		startQuiz(records, score, mistakes, mode, reader)
+		startQuiz(records, mode, reader)
 		displayScore()
 		break
 	}
 }
 
-func startQuiz(records []csvreadwriter.Record[int], score int, mistakes int, mode helper.MathMode, reader *bufio.Reader) {
+func startQuiz(records []csvreadwriter.Record[int], mode helper.MathMode, reader *bufio.Reader) {
 	operator := helper.GetOperatorSymbol(mode)
 	for i, r := range records {
 		nums := r.Record
@@ -120,6 +120,6 @@ func selectMathMode(reader *bufio.Reader) (helper.MathMode, error) {
 		os.Exit(0)
 	}
 
-	mode, _, err := helper.SelectMathMode(userInput)
+	mode, _, err := helper.MapInputToMathMode(userInput)
 	return mode, err
 }

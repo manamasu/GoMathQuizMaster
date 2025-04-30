@@ -14,7 +14,6 @@ var (
 )
 
 func main() {
-
 	flag.StringVar(&filename, "csv", "problems.csv", "CSV file with math problems")
 	flag.IntVar(&max, "max", helper.DefaultMax, "Max has to be positive. e.g. Numbers from 0 to max")
 	flag.IntVar(&sampleSize, "size", helper.DefaultSampleSize, "Sample Size of math problems. Has to be at least one.")
@@ -25,7 +24,7 @@ func main() {
 		return
 	}
 	if sampleSize <= 0 {
-		fmt.Println("The sample size has to be at least one to start the Quiz.")
+		fmt.Println("The sample size has to be at least one sample to start the Quiz.")
 		return
 	}
 

@@ -38,25 +38,17 @@ func GenerateMathProblemRecord(sampleSize int, max int, mode MathMode, mop func(
 	src := rand.NewSource(time.Now().UnixNano())
 	r := rand.New(src) //Salting (Randomization) based on our src
 
-	// Preallocate a slice to hold x Amount of problem records --- Here: x = 100 //TODO variable amount chosen by user
+	// Preallocating a slice to hold sampleSize Amount of problem records --- e.g.: default sampleSize = 100
 	numbers := make([][]int, 0, sampleSize)
 
-	var a, b, result int
 	switch mode {
 	case Division:
-		// For division it is important to avoid division by zero, so we need to offset r.Intn(number) by +1.
-		for i := 0; i < sampleSize; i++ {
-			b = r.Intn(9) + 1          // Generating a divisor between 1 and 9 (inclusive).
-			result = r.Intn(max/b) + 1 // Generating a quotient between 1 and 10 (inclusive).
-			a = b * result             // Calculate the dividend for exact division. e.g: b=3; result=4; a=3*4=12; 12/3=4
-			record := []int{a, b, result}
-			numbers = append(numbers, record)
-		}
+		numbers = generateDivisionProblems(r, sampleSize, max)
 	default:
 		// For addition, subtraction, and multiplication:
 		// generate random operands and calculate result by using math operation function (mop)
 		for i := 0; i < sampleSize; i++ {
-			a = r.Intn(max)
+			a := r.Intn(max)
 			b := r.Intn(max)
 			record := []int{a, b, mop(a, b)}
 
@@ -111,8 +103,8 @@ func GetMathOp(mode MathMode) func(int, int) int {
 	}
 }
 
-// SelectMathMode maps a string input to a defined MathMode and returns the corresponding operation function
-func SelectMathMode(input string) (MathMode, func(int, int) int, error) {
+// MapInputToMathMode maps a string input to a defined MathMode and returns the corresponding operation function
+func MapInputToMathMode(input string) (MathMode, func(int, int) int, error) {
 	switch input {
 	case "1":
 		return Addition, GetMathOp(Addition), nil
@@ -125,6 +117,22 @@ func SelectMathMode(input string) (MathMode, func(int, int) int, error) {
 	default:
 		return 0, nil, fmt.Errorf("invalid input %s", input)
 	}
+}
+
+// generateDivisionProblems handles exact division math problems, avoiding division by zero
+func generateDivisionProblems(r *rand.Rand, sampleSize int, max int) [][]int {
+	numbers := make([][]int, 0, sampleSize)
+
+	// For division it is important to avoid division by zero, so we need to offset r.Intn(number) by +1.
+	for i := 0; i < sampleSize; i++ {
+		b := r.Intn(9) + 1          // Generating a divisor between 1 and 9 (inclusive).
+		result := r.Intn(max/b) + 1 // Generating a quotient between 1 and 10 (inclusive).
+		a := b * result             // Calculate the dividend for exact division. e.g: b=3; result=4; a=3*4=12; 12/3=4
+		record := []int{a, b, result}
+		numbers = append(numbers, record)
+	}
+
+	return numbers
 }
 
 func GetOperatorSymbol(mode MathMode) string {
